@@ -98,7 +98,6 @@ const jsEditor = CodeMirror(document.getElementById('jsEditor'), {
     mode: 'javascript',
     theme: 'dracula',
     lineNumbers: true,
-    value: demoJS,
     tabSize: 2,
     placeholder: 'Write JavaScript code here...',
 });
