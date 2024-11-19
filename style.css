@@ -1,0 +1,166 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #121212;
+    color: #fff;
+    display: flex;
+    height: 100vh;
+}
+
+.container {
+    display: flex; 
+    flex-direction: column;
+    width: 100%;
+}
+
+.compiler {
+    width: 100%;
+    background-color: #1e1e1e;
+}
+
+.menu {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.menu button {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 20px 35px;
+    cursor: pointer;
+}
+
+.menu button:hover {
+    background-color: #444;
+}
+
+.menu button.active {
+    background-color: #444;  /* Darken the background color when active */
+    color: #fff;  /* Change the text color to white when active */
+}
+
+
+#runBtn {
+    margin-left: auto;  /* Push the button to the right */
+    background-color: rgb(24, 154, 24);
+    padding: 10px 20px;
+}
+
+.menu i{
+    font-size: 25px;
+}
+
+/* output */
+.output {
+    width: 100%;
+    display: flex;
+    overflow: scroll;
+    /* position: relative; */
+}
+
+#htmlEditor, #cssEditor, #jsEditor{
+    width: 50%;
+    height:86vh;
+}
+
+.CodeMirror {
+    height: 90vh;
+    border: 1px solid #333;
+}
+
+#outputIframe {
+    width: 50%;
+    height: 90vh;
+    border: 1px solid #333;
+    background-color: #fff;
+}
+
+
+.autocomplete-container {
+    position: absolute;
+    background: #333;
+    border: 1px solid #888;
+    border-radius: 5px;
+    max-height: 200px;
+    font-size: 12px;
+    overflow-y: auto;
+    width: 200px;
+    z-index: 1000;
+  }
+  
+  .autocomplete-item {
+    padding: 2px;
+    color: white;
+    cursor: pointer;
+  }
+  
+  .autocomplete-item:hover {
+    background-color: #444;
+  }
+  
+  /* **************scroll code going here****************** */
+/* Hide scrollbars in CodeMirror editor */
+.CodeMirror {
+    overflow: hidden; /* Hide both vertical and horizontal scrollbars */
+}
+
+/* Hide vertical scrollbar specifically in CodeMirror */
+.CodeMirror-vscrollbar {
+    display: none;
+}
+
+/* Hide horizontal scrollbar specifically in CodeMirror */
+.CodeMirror-hscrollbar {
+    display: none;
+}
+
+/* Hide scrollbars in the output iframe */
+#outputIframe {
+    overflow: hidden; /* Hide both vertical and horizontal scrollbars */
+}
+
+::-webkit-scrollbar{display:none;}
+
+
+
+/* ----------------------------------------------- */
+#liveCodeCheckbox {
+    position: relative; 
+    width: 20px; 
+    height: 20px; 
+    margin-left: 20px;
+    appearance: none; 
+    background-color: #333;
+    border: 2px solid #555;
+    border-radius: 4px; 
+    cursor: pointer; 
+    transition: all 0.3s ease; 
+}
+
+#liveCodeCheckbox:checked {
+    background-color: #00aaff; 
+    border-color: #0077cc;  
+    box-shadow: 0 0 10px rgba(0, 170, 255, 0.5); 
+}
+
+#liveCodeCheckbox:checked::before {
+    content: "✔"; 
+    color: white; /* Color of the checkmark */
+    font-size: 16px; /* Size of the checkmark */
+    position: absolute;
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+}
+
+#liveCodeCheckbox:hover {
+    background-color: #444; 
+    border-color: #666;
+}
