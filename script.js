@@ -190,6 +190,7 @@ liveCodeCheckbox.addEventListener("change", () => {
     }
 });
 
+winload.onload = updateOutput();
 // Manual run button
 runBtn.addEventListener("click", updateOutput);
 
