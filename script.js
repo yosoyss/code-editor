@@ -150,7 +150,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 document.getElementById('runBtn').addEventListener('click', () => {
-    runCode();
+    updateOutput();
 });
 
 // Switch editors visibility
