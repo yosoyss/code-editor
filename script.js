@@ -1,4 +1,37 @@
 // List of CSS properties and values for suggestions (A to Z)
+const demoHTML = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Page</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Welcome to the Online Editor</h1>
+    <p>This is a demo page to show HTML, CSS, and JavaScript in action.</p>
+</body>
+</html>
+`;
+
+const demoCSS = `
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+h1 {
+    color: #2c3e50;
+}
+
+p {
+    font-size: 16px;
+    color: #555;
+}
+`;
+
 const cssSuggestions = {
     "align-items": ["flex-start", "flex-end", "center", "stretch", "baseline"],
     "align-self": ["auto", "flex-start", "flex-end", "center", "stretch", "baseline"],
@@ -47,6 +80,7 @@ const htmlEditor = CodeMirror(document.getElementById('htmlEditor'), {
     mode: 'html',
     theme: 'dracula',
     lineNumbers: true,
+    value: demoHTML,
     tabSize: 2,
     placeholder: 'Write HTML code here...',
 });
@@ -55,6 +89,7 @@ const cssEditor = CodeMirror(document.getElementById('cssEditor'), {
     mode: 'css',
     theme: 'dracula',
     lineNumbers: true,
+     value: demoCSS,
     tabSize: 2,
     placeholder: 'Write CSS code here...',
 });
@@ -63,6 +98,7 @@ const jsEditor = CodeMirror(document.getElementById('jsEditor'), {
     mode: 'javascript',
     theme: 'dracula',
     lineNumbers: true,
+    value: demoJS,
     tabSize: 2,
     placeholder: 'Write JavaScript code here...',
 });
