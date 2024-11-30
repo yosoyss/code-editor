@@ -46,11 +46,16 @@ body {
     color: #fff;  /* Change the text color to white when active */
 }
 
+#downloadAll{
+    margin-left: 40px;
+    background-color: transparent;
+}
+
 
 #runBtn {
     margin-left: auto;  /* Push the button to the right */
     background-color: rgb(24, 154, 24);
-    padding: 10px 20px;
+    padding: 15px 20px;
 }
 
 .menu i{
