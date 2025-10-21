@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Class Full Documentation</title>
+    <link rel="stylesheet" href="style.css">
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+</head>
+
+<body>
+    <header>
+            <a href="index.html" style="color: white; text-decoration: none;"> <i class="fa-solid fa-arrow-left"></i> </a>
+    <span>Delete Class Documentation</span>  <button id="modeToggle"> <i class="fas fa-moon"></i></button></header>
+    </header>
+
+    <main>
+        <h2>Overview</h2>
+        <p>
+            The <code>Delete</code> class is a PHP query builder designed for securely deleting rows from MySQL tables
+            using prepared statements. It provides a fluent interface to construct precise <code>DELETE</code> queries,
+            ensuring safety and control. Key features include:
+        </p>
+        <ul>
+            <li>Safe sanitization of table and column names to prevent SQL injection</li>
+            <li>Support for <code>WHERE</code> and <code>OR WHERE</code> conditions for targeted deletions</li>
+            <li><code>WHERE IN</code> support for deleting multiple specific rows</li>
+            <li><code>ORDER BY</code> and <code>LIMIT</code> for controlled deletion operations</li>
+            <li>Return of the executed SQL query and the number of affected rows</li>
+            <li>A <code>debug</code> method for inspecting the query without execution</li>
+        </ul>
+        <p>This class simplifies safe deletion operations by abstracting raw SQL into a chainable syntax, making it
+            ideal for applications requiring secure and precise data removal.</p>
+
+        <h2>Full Method Reference</h2>
+
+        <div class="method">
+            <h3>__construct()</h3>
+            <p>Initializes a new instance of the <code>Delete</code> class and establishes a connection to the MySQL
+                database. This method sets up the internal state for building the delete query.</p>
+            <p><strong>Example:</strong></p>
+            <pre>$delete = new Delete();</pre>
+            <p><strong>Notes:</strong> Requires a valid database configuration (e.g., host, user, password). Throws an
+                exception if the connection fails.</p>
+        </div>
+
+        <div class="method">
+            <h3>table(<code>$table</code>)</h3>
+            <p>Specifies the target table for the <code>DELETE</code> query. The table name is validated to ensure it
+                contains only letters, numbers, and underscores to prevent SQL injection.</p>
+            <table class="table">
+                <tr>
+                    <th>Parameter</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>$table</td>
+                    <td>string</td>
+                    <td>The name of the table to delete rows from</td>
+                </tr>
+            </table>
+            <p><strong>Example:</strong></p>
+            <pre class="code-block">$delete->table('users');</pre>
+            <p><strong>Notes:</strong> Must be called before <code>where</code>, <code>whereIn</code>, or
+                <code>run</code>. Invalid table names will throw an exception.
+            </p>
+        </div>
+
+        <div class="method">
+            <h3>where(<code>$column, $operator, $value</code>)</h3>
+            <p>Adds a <code>WHERE</code> condition to filter which rows to delete. Supports multiple operators and
+                automatically handles <code>NULL</code> values securely.</p>
+            <table class="table">
+                <tr>
+                    <th>Parameter</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>$column</td>
+                    <td>string</td>
+                    <td>Column to filter</td>
+                </tr>
+                <tr>
+                    <td>$operator</td>
+                    <td>string</td>
+                    <td>Comparison operator: '=', '!=', '<', '>' , '<=' , '>=' , 'LIKE' </td>
+                </tr>
+                <tr>
+                    <td>$value</td>
+                    <td>mixed</td>
+                    <td>Value to compare against (including NULL)</td>
+                </tr>
+            </table>
+            <p><strong>Example:</strong></p>
+            <pre class="code-block">$delete->where('status', '=', 'inactive');</pre>
+            <p><strong>Notes:</strong> Multiple <code>where</code> calls are combined with <code>AND</code>. Uses
+                prepared statements for secure value binding.</p>
+        </div>
+
+        <div class="method">
+            <h3>orWhere(<code>$column, $operator, $value</code>)</h3>
+            <p>Adds an <code>OR</code> condition to the <code>WHERE</code> clause, allowing alternative filtering
+                conditions for deletion.</p>
+            <table class="table">
+                <tr>
+                    <th>Parameter</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>$column</td>
+                    <td>string</td>
+                    <td>Column to filter</td>
+                </tr>
+                <tr>
+                    <td>$operator</td>
+                    <td>string</td>
+                    <td>Comparison operator: '=', '!=', '<', '>' , '<=' , '>=' , 'LIKE' </td>
+                </tr>
+                <tr>
+                    <td>$value</td>
+                    <td>mixed</td>
+                    <td>Value to compare against (including NULL)</td>
+                </tr>
+            </table>
+            <p><strong>Example:</strong></p>
+            <pre>$delete->orWhere('role', '=', 'guest');</pre>
+            <p><strong>Notes:</strong> Use after a <code>where</code> call to create complex conditions. Combines with
+                previous conditions using <code>OR</code>.</p>
+        </div>
+
+        <div class="method">
+            <h3>whereIn(<code>$column, array $values</code>)</h3>
+            <p>Adds a <code>WHERE IN</code> condition to delete rows where the column value matches any value in the
+                provided array.</p>
+            <table class="table">
+                <tr>
+                    <th>Parameter</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>$column</td>
+                    <td>string</td>
+                    <td>Column to filter</td>
+                </tr>
+                <tr>
+                    <td>$values</td>
+                    <td>array</td>
+                    <td>Array of values to match</td>
+                </tr>
+            </table>
+            <p><strong>Example:</strong></p>
+            <pre>$delete->whereIn('id', [3, 5, 7]);</pre>
+            <p><strong>Notes:</strong> Automatically generates placeholders and binds values securely. Ensure the array
+                is not empty to avoid SQL errors.</p>
+        </div>
+
+        <div class="method">
+            <h3>orderBy(<code>$column, $direction</code>)</h3>
+            <p>Adds an <code>ORDER BY</code> clause to control the order in which rows are deleted, useful when combined
+                with <code>limit</code>.</p>
+            <table class="table">
+                <tr>
+                    <th>Parameter</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>$column</td>
+                    <td>string</td>
+                    <td>Column to sort by</td>
+                </tr>
+                <tr>
+                    <td>$direction</td>
+                    <td>string</td>
+                    <td>Sort direction: 'ASC' or 'DESC'</td>
+                </tr>
+            </table>
+            <p><strong>Example:</strong></p>
+            <pre>$delete->orderBy('id', 'DESC');</pre>
+            <p><strong>Notes:</strong> Multiple <code>orderBy</code> calls can be chained for multi-column sorting.
+                Invalid directions default to <code>ASC</code>.</p>
+        </div>
+
+        <div class="method">
+            <h3>limit(<code>$limit</code>)</h3>
+            <p>Restricts the number of rows to be deleted, providing precise control over deletion operations.</p>
+            <table class="table">
+                <tr>
+                    <th>Parameter</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>$limit</td>
+                    <td>integer</td>
+                    <td>Maximum number of rows to delete</td>
+                </tr>
+            </table>
+            <p><strong>Example:</strong></p>
+            <pre>$delete->limit(1);</pre>
+            <p><strong>Notes:</strong> Must be a non-negative integer. Often used with <code>orderBy</code> to ensure
+                predictable deletions.</p>
+        </div>
+
+        <div class="method">
+            <h3>debug()</h3>
+            <p>Returns an associative array containing the SQL query string, parameter types, and bound parameters
+                without executing the query. Useful for testing and debugging.</p>
+            <table class="table">
+                <tr>
+                    <th>Return</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>Debug Info</td>
+                    <td>array</td>
+                    <td>Array with 'sql' (query string), 'types' (parameter types), and 'params' (bound values)</td>
+                </tr>
+            </table>
+            <p><strong>Example:</strong></p>
+            <pre>
+$debug = $delete->table('users')
+                ->where('status', '=', 'inactive')
+                ->limit(2)
+                ->debug();
+print_r($debug);
+      </pre>
+            <div class="example-output">
+                {
+                "sql": "DELETE FROM users WHERE status = ? LIMIT 2",
+                "types": "s",
+                "params": ["inactive"]
+                }
+            </div>
+            <p><strong>Notes:</strong> Use this method to inspect the query before execution. Does not modify the
+                database.</p>
+        </div>
+
+        <div class="method">
+            <h3>run()</h3>
+            <p>Executes the constructed <code>DELETE</code> query and returns an associative array containing the
+                executed SQL string and the number of affected rows.</p>
+            <table class="table">
+                <tr>
+                    <th>Return</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>Result</td>
+                    <td>array</td>
+                    <td>Array with 'sql' (executed query) and 'affected' (number of deleted rows)</td>
+                </tr>
+            </table>
+            <p><strong>Example:</strong></p>
+            <pre>
+$result = $delete->table('users')
+                 ->where('status', '=', 'inactive')
+                 ->limit(2)
+                 ->run();
+print_r($result);
+      </pre>
+            <div class="example-output">
+                {
+                "sql": "DELETE FROM users WHERE status = ? LIMIT 2",
+                "affected": 2
+                }
+            </div>
+            <p><strong>Notes:</strong> Throws an exception if the table or query is invalid. Ensure <code>table</code>
+                and any conditions are set before calling.</p>
+        </div>
+
+        <h2>Example Full Delete</h2>
+        <p>This example demonstrates deleting specific user records based on role and ID, ordered and limited to three
+            rows.</p>
+        <pre>
+$delete = new Delete();
+
+$delete->table('users')
+       ->where('role', '=', 'guest')
+       ->whereIn('id', [3, 5, 7])
+       ->orderBy('id', 'ASC')
+       ->limit(3);
+
+$result = $delete->run();
+
+echo "Executed SQL: ".$result['sql'];
+echo "Affected Rows: ".$result['affected'];
+    </pre>
+        <div class="example-output">
+            Executed SQL: DELETE FROM users WHERE role = ? AND id IN (?,?,?) ORDER BY id ASC LIMIT 3<br>
+            Affected Rows: 3
+        </div>
+        <p><strong>Notes:</strong> This query deletes up to three user records where the role is 'guest' and the ID is
+            3, 5, or 7, sorted by ID in ascending order. The <code>limit</code> ensures controlled deletion.</p>
+
+    </main>
+
+    <script src="mode.js"></script>
+
+</body>
+
+</html>

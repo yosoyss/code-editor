@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select Class Full Documentation</title>
+  <link rel="stylesheet" href="style.css">
+
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    /* ---------- VS CODE THEME ---------- */
+  </style>
+</head>
+
+<body>
+  <header>
+    <a href="index.html" style="color: white; text-decoration: none;"> <i class="fa-solid fa-arrow-left"></i> </a>
+    <span>Select Class Documentation</span> <button id="modeToggle"> <i class="fas fa-moon"></i></button></header>
+
+  <main>
+
+    <h2>Overview</h2>
+    <p>
+      The <code>Select</code> class is a PHP query builder designed to create dynamic and secure <code>SELECT</code> SQL
+      queries. It provides a fluent interface to construct complex database queries with support for:
+    </p>
+    <ul>
+      <li>JOINs (INNER, LEFT, RIGHT), WHERE, GROUP BY, HAVING, ORDER BY clauses</li>
+      <li>Conditions like IN, BETWEEN, LIKE, and NULL checks</li>
+      <li>Features such as UNION, DISTINCT, LIMIT, and OFFSET</li>
+      <li>Prepared statements with automatic parameter binding for enhanced security</li>
+    </ul>
+    <p>This class simplifies database interactions by abstracting raw SQL into a chainable, readable syntax while
+      preventing SQL injection through proper parameter handling.</p>
+
+    <h2>Full Method Reference</h2>
+
+    <!-- Method Template -->
+    <div class="method">
+      <h3>__construct()</h3>
+      <p>Initializes a new instance of the <code>Select</code> class and establishes a database connection. This method
+        sets up the internal state for building the query.</p>
+      <p><strong>Example:</strong></p>
+      <pre>$select = new Select();</pre>
+      <p><strong>Notes:</strong> Ensure a valid database configuration is available before instantiation. Throws an
+        exception if the connection fails.</p>
+    </div>
+
+    <div class="method">
+      <h3>table(<code>$tableName</code>)</h3>
+      <p>Specifies the primary table for the <code>SELECT</code> query. This method must be called before other
+        query-building methods.</p>
+      <table class="table">
+        <tr>
+          <th>Parameter</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>$tableName</td>
+          <td>string</td>
+          <td>The name of the table to query</td>
+        </tr>
+      </table>
+      <p><strong>Example:</strong></p>
+      <pre>$select->table('users');</pre>
+      <p><strong>Notes:</strong> The table name should match the database schema. Use table aliases if needed by
+        including them in the string (e.g., <code>'users u'</code>).</p>
+    </div>
+
+    <div class="method">
+      <h3>columns(<code>$columns</code>)</h3>
+      <p>Defines the columns to retrieve in the <code>SELECT</code> query. Accepts either a single string (e.g.,
+        <code>'*'</code> for all columns) or an array of column names.</p>
+      <table class="table">
+        <tr>
+          <th>Parameter</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>$columns</td>
+          <td>string|array</td>
+          <td>Columns to select, e.g., '*' or ['id', 'name', 'email']</td>
+        </tr>
+      </table>
+      <p><strong>Example:</strong></p>
+      <pre>$select->columns(['id', 'name', 'email']);</pre>
+      <p><strong>Notes:</strong> Using specific columns improves performance by reducing the amount of data retrieved.
+        Ensure column names are valid to avoid SQL errors.</p>
+    </div>
+
+    <div class="method">
+      <h3>distinct()</h3>
+      <p>Adds the <code>DISTINCT</code> keyword to the <code>SELECT</code> query to eliminate duplicate rows from the
+        result set.</p>
+      <p><strong>Example:</strong></p>
+      <pre>$select->distinct();</pre>
+      <p><strong>Notes:</strong> Use this method when you need unique rows based on the selected columns. Be cautious
+        with performance on large datasets.</p>
+    </div>
+
+    <div class="method">
+      <h3>join(<code>$table, $firstCol, $operator, $secondCol, $type</code>)</h3>
+      <p>Adds a <code>JOIN</code> clause to combine rows from another table based on a condition.</p>
+      <table class="table">
+        <tr>
+          <th>Parameter</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>$table</td>
+          <td>string</td>
+          <td>Name of the table to join</td>
+        </tr>
+        <tr>
+          <td>$firstCol</td>
+          <td>string</td>
+          <td>Column of the base table</td>
+        </tr>
+        <tr>
+          <td>$operator</td>
+          <td>string</td>
+          <td>Comparison operator (e.g., '=', '>', '<')< /td>
+        </tr>
+        <tr>
+          <td>$secondCol</td>
+          <td>string</td>
+          <td>Column of the joined table</td>
+        </tr>
+        <tr>
+          <td>$type</td>
+          <td>string</td>
+          <td>Type of JOIN: 'INNER', 'LEFT', or 'RIGHT'</td>
+        </tr>
+      </table>
+      <p><strong>Example:</strong></p>
+      <pre>$select->join('roles', 'users.role_id', '=', 'roles.id', 'LEFT');</pre>
+      <p><strong>Notes:</strong> Ensure the columns exist in their respective tables. The <code>$type</code> parameter
+        is case-sensitive and defaults to <code>INNER</code> if invalid.</p>
+    </div>
+
+    <div class="method">
+      <h3>where(<code>$column, $operator, $value</code>)</h3>
+      <p>Adds a <code>WHERE</code> condition to filter results based on a column, operator, and value. Uses prepared
+        statements for security.</p>
+      <table class="table">
+        <tr>
+          <th>Parameter</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>$column</td>
+          <td>string</td>
+          <td>Column to filter</td>
+        </tr>
+        <tr>
+          <td>$operator</td>
+          <td>string</td>
+          <td>Comparison operator (e.g., '=', '>', '<')< /td>
+        </tr>
+        <tr>
+          <td>$value</td>
+          <td>mixed</td>
+          <td>Value to compare against</td>
+        </tr>
+      </table>
+      <p><strong>Example:</strong></p>
+      <pre>$select->where('status', '=', 'active');</pre>
+      <p><strong>Notes:</strong> Multiple <code>where</code> calls are combined with <code>AND</code>. Use parameter
+        binding to prevent SQL injection.</p>
+    </div>
+
+    <div class="method">
+      <h3>orWhere(<code>$column, $operator, $value</code>)</h3>
+      <p>Adds an <code>OR</code> condition to the <code>WHERE</code> clause, allowing alternative filtering conditions.
+      </p>
+      <table class="table">
+        <tr>
+          <th>Parameter</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>$column</td>
+          <td>string</td>
+          <td>Column to filter</td>
+        </tr>
+        <tr>
+          <td>$operator</td>
+          <td>string</td>
+          <td>Comparison operator (e.g., '=', '>', '<')< /td>
+        </tr>
+        <tr>
+          <td>$value</td>
+          <td>mixed</td>
+          <td>Value to compare against</td>
+        </tr>
+      </table>
+      <p><strong>Example:</strong></p>
+      <pre>$select->orWhere('role', '=', 2);</pre>
+      <p><strong>Notes:</strong> Use after a <code>where</code> call to create complex conditions. Combines with
+        previous conditions using <code>OR</code>.</p>
+    </div>
+
+    <div class="method">
+      <h3>whereLike(<code>$column, $value, $boolean='AND'</code>)</h3>
+      <p>Adds a <code>LIKE</code> condition to filter rows where the column matches a pattern (e.g., for partial string
+        matches).</p>
+      <table class="table">
+        <tr>
+          <th>Parameter</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>$column</td>
+          <td>string</td>
+          <td>Column to filter</td>
+        </tr>
+        <tr>
+          <td>$value</td>
+          <td>string</td>
+          <td>Pattern to match (e.g., '%John%')</td>
+        </tr>
+        <tr>
+          <td>$boolean</td>
+          <td>string</td>
+          <td>Logical operator: 'AND' or 'OR' (default: 'AND')</td>
+        </tr>
+      </table>
+      <p><strong>Example:</strong></p>
+      <pre>$select->whereLike('name', '%John%');</pre>
+      <p><strong>Notes:</strong> Use '%' wildcards for partial matches. Case sensitivity depends on the database
+        configuration.</p>
+    </div>
+
+    <div class="method">
+      <h3>whereNotLike(<code>$column, $value, $boolean='AND'</code>)</h3>
+      <p>Adds a <code>NOT LIKE</code> condition to exclude rows where the column matches a pattern.</p>
+      <table class="table">
+        <tr>
+          <th>Parameter</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>$column</td>
+          <td>string</td>
+          <td>Column to filter</td>
+        </tr>
+        <tr>
+          <td>$value</td>
+          <td>string</td>
+          <td>Pattern to exclude (e.g., '%test%')</td>
+        </tr>
+        <tr>
+          <td>$boolean</td>
+          <td>string</td>
+          <td>Logical operator: 'AND' or 'OR' (default: 'AND')</td>
+        </tr>
+      </table>
+      <p><strong>Example:</strong></p>
+      <pre>$select->whereNotLike('email', '%test%');</pre>
+      <p><strong>Notes:</strong> Similar to <code>whereLike</code> but inverts the condition. Ensure proper wildcard
+        usage for desired results.</p>
+    </div>
+
+    <div class="method">
+      <h3>isNull(<code>$column, $boolean='AND'</code>)</h3>
+      <p>Adds an <code>IS NULL</code> condition to filter rows where the specified column is null.</p>
+      <table class="table">
+        <tr>
+          <th>Parameter</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>$column</td>
+          <td>string</td>
+          <td>Column to check for NULL</td>
+        </tr>
+        <tr>
+          <td>$boolean</td>
+          <td>string</td>
+          <td>Logical operator: 'AND' or 'OR' (default: 'AND')</td>
+        </tr>
+      </table>
+      <p><strong>Example:</strong></p>
+      <pre>$select->isNull('deleted_at');</pre>
+      <p><strong>Notes:</strong> Useful for soft-deleted records or optional fields. Combines with other conditions
+        using the specified logical operator.</p>
+    </div>
+
+    <div class="method">
+      <h3>isNotNull(<code>$column, $boolean='AND'</code>)</h3>
+      <p>Adds an <code>IS NOT NULL</code> condition to filter rows where the specified column is not null.</p>
+      <table class="table">
+        <tr>
+          <th>Parameter</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>$column</td>
+          <td>string</td>
+          <td>Column to check for non-NULL</td>
+        </tr>
+        <tr>
+          <td>$boolean</td>
+          <td>string</td>
+          <td>Logical operator: 'AND' or 'OR' (default: 'AND')</td>
+        </tr>
+      </table>
+      <p><strong>Example:</strong></p>
+      <pre>$select->isNotNull('deleted_at');</pre>
+      <p><strong>Notes:</strong> Opposite of <code>isNull</code>. Use to ensure a column contains valid data.</p>
+    </div>
+
+    <div class="method">
+      <h3>whereIn(<code>$column, array $values</code>)</h3>
+      <p>Adds a <code>WHERE IN</code> condition to filter rows where the column value is in the provided array.</p>
+      <table class="table">
+        <tr>
+          <th>Parameter</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>$column</td>
+          <td>string</td>
+          <td>Column to filter</td>
+        </tr>
+        <tr>
+          <td>$values</td>
+          <td>array</td>
+          <td>Array of values to match</td>
+        </tr>
+      </table>
+      <p><strong>Example:</strong></p>
+      <pre>$select->whereIn('id', [1, 2, 3]);</pre>
+      <p><strong>Notes:</strong> Uses prepared statements for each value to ensure security. Ensure the array is not
+        empty to avoid SQL errors.</p>
+    </div>
+
+    <div class="method">
+      <h3>whereNotIn(<code>$column, array $values</code>)</h3>
+      <p>Adds a <code>WHERE NOT IN</code> condition to exclude rows where the column value is in the provided array.</p>
+      <table class="table">
+        <tr>
+          <th>Parameter</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>$column</td>
+          <td>string</td>
+          <td>Column to filter</td>
+        </tr>
+        <tr>
+          <td>$values</td>
+          <td>array</td>
+          <td>Array of values to exclude</td>
+        </tr>
+      </table>
+      <p><strong>Example:</strong></p>
+      <pre>$select->whereNotIn('id', [4, 5]);</pre>
+      <p><strong>Notes:</strong> Similar to <code>whereIn</code> but inverts the condition. Empty arrays may cause
+        unexpected behavior.</p>
+    </div>
+
+    <div class="method">
+      <h3>whereBetween(<code>$column, array $values, $boolean='AND'</code>)</h3>
+      <p>Adds a <code>WHERE BETWEEN</code> condition to filter rows where the column value lies within a range.</p>
+      <table class="table">
+        <tr>
+          <th>Parameter</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>$column</td>
+          <td>string</td>
+          <td>Column to filter</td>
+        </tr>
+        <tr>
+          <td>$values</td>
+          <td>array</td>
+          <td>Array with two values defining the range [min, max]</td>
+        </tr>
+        <tr>
+          <td>$boolean</td>
+          <td>string</td>
+          <td>Logical operator: 'AND' or 'OR' (default: 'AND')</td>
+        </tr>
+      </table>
+      <p><strong>Example:</strong></p>
+      <pre>$select->whereBetween('age', [18, 30]);</pre>
+      <p><strong>Notes:</strong> The array must contain exactly two values. The range is inclusive.</p>
+    </div>
+
+    <div class="method">
+      <h3>whereNotBetween(<code>$column, array $values, $boolean='AND'</code>)</h3>
+      <p>Adds a <code>WHERE NOT BETWEEN</code> condition to exclude rows where the column value lies within a range.</p>
+      <table class="table">
+        <tr>
+          <th>Parameter</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>$column</td>
+          <td>string</td>
+          <td>Column to filter</td>
+        </tr>
+        <tr>
+          <td>$values</td>
+          <td>array</td>
+          <td>Array with two values defining the range [min, max]</td>
+        </tr>
+        <tr>
+          <td>$boolean</td>
+          <td>string</td>
+          <td>Logical operator: 'AND' or 'OR' (default: 'AND')</td>
+        </tr>
+      </table>
+      <p><strong>Example:</strong></p>
+      <pre>$select->whereNotBetween('age', [50, 60]);</pre>
+      <p><strong>Notes:</strong> Opposite of <code>whereBetween</code>. Ensure the array has exactly two values.</p>
+    </div>
+
+    <div class="method">
+      <h3>whereSub(<code>$column, $operator, $subquery, $params=[], $paramTypes=''</code>)</h3>
+      <p>Adds a subquery to the <code>WHERE</code> clause, allowing complex nested conditions.</p>
+      <table class="table">
+        <tr>
+          <th>Parameter</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>$column</td>
+          <td>string</td>
+          <td>Column to compare against subquery</td>
+        </tr>
+        <tr>
+          <td>$operator</td>
+          <td>string</td>
+          <td>Comparison operator (e.g., 'IN', '=')</td>
+        </tr>
+        <tr>
+          <td>$subquery</td>
+          <td>string</td>
+          <td>Raw subquery SQL</td>
+        </tr>
+        <tr>
+          <td>$params</td>
+          <td>array</td>
+          <td>Parameters for the subquery (optional)</td>
+        </tr>
+        <tr>
+          <td>$paramTypes</td>
+          <td>string</td>
+          <td>Parameter types for binding (optional)</td>
+        </tr>
+      </table>
+      <p><strong>Example:</strong></p>
+      <pre>$select->whereSub('id', 'IN', 'SELECT user_id FROM orders');</pre>
+      <p><strong>Notes:</strong> Ensure the subquery is valid SQL. Use <code>$params</code> for safe parameter binding
+        in the subquery.</p>
+    </div>
+
+    <div class="method">
+      <h3>orderBy(<code>$column, $order</code>)</h3>
+      <p>Adds an <code>ORDER BY</code> clause to sort the results by a specified column and direction.</p>
+      <table class="table">
+        <tr>
+          <th>Parameter</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>$column</td>
+          <td>string</td>
+          <td>Column to sort by</td>
+        </tr>
+        <tr>
+          <td>$order</td>
+          <td>string</td>
+          <td>Sort direction: 'ASC' or 'DESC'</td>
+        </tr>
+      </table>
+      <p><strong>Example:</strong></p>
+      <pre>$select->orderBy('created_at', 'DESC');</pre>
+      <p><strong>Notes:</strong> Multiple <code>orderBy</code> calls can be chained for multi-column sorting. Invalid
+        directions default to <code>ASC</code>.</p>
+    </div>
+
+    <div class="method">
+      <h3>groupBy(<code>$column</code>)</h3>
+      <p>Adds a <code>GROUP BY</code> clause to group rows by a specified column, often used with aggregate functions.
+      </p>
+      <table class="table">
+        <tr>
+          <th>Parameter</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>$column</td>
+          <td>string</td>
+          <td>Column to group by</td>
+        </tr>
+      </table>
+      <p><strong>Example:</strong></p>
+      <pre>$select->groupBy('role');</pre>
+      <p><strong>Notes:</strong> Ensure selected columns are either grouped or aggregated to avoid SQL errors in strict
+        modes.</p>
+    </div>
+
+    <div class="method">
+      <h3>having(<code>$column, $operator, $value, $boolean='AND'</code>)</h3>
+      <p>Adds a <code>HAVING</code> condition to filter grouped results, typically used with aggregate functions like
+        <code>COUNT</code>.</p>
+      <table class="table">
+        <tr>
+          <th>Parameter</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>$column</td>
+          <td>string</td>
+          <td>Aggregate column to filter (e.g., 'count')</td>
+        </tr>
+        <tr>
+          <td>$operator</td>
+          <td>string</td>
+          <td>Comparison operator (e.g., '>', '<')< /td>
+        </tr>
+        <tr>
+          <td>$value</td>
+          <td>mixed</td>
+          <td>Value to compare against</td>
+        </tr>
+        <tr>
+          <td>$boolean</td>
+          <td>string</td>
+          <td>Logical operator: 'AND' or 'OR' (default: 'AND')</td>
+        </tr>
+      </table>
+      <p><strong>Example:</strong></p>
+      <pre>$select->having('count', '>', 5);</pre>
+      <p><strong>Notes:</strong> Use after <code>groupBy</code>. Combines with other <code>having</code> conditions
+        using the specified logical operator.</p>
+    </div>
+
+    <div class="method">
+      <h3>limit(<code>$limit</code>)</h3>
+      <p>Sets the maximum number of rows to return in the result set.</p>
+      <table class="table">
+        <tr>
+          <th>Parameter</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>$limit</td>
+          <td>integer</td>
+          <td>Number of rows to return</td>
+        </tr>
+      </table>
+      <p><strong>Example:</strong></p>
+      <pre>$select->limit(10);</pre>
+      <p><strong>Notes:</strong> Use with <code>offset</code> for pagination. Must be a non-negative integer.</p>
+    </div>
+
+    <div class="method">
+      <h3>offset(<code>$offset</code>)</h3>
+      <p>Skips a specified number of rows before returning results. Requires <code>limit</code> to be set.</p>
+      <table class="table">
+        <tr>
+          <th>Parameter</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>$offset</td>
+          <td>integer</td>
+          <td>Number of rows to skip</td>
+        </tr>
+      </table>
+      <p><strong>Example:</strong></p>
+      <pre>$select->offset(5);</pre>
+      <p><strong>Notes:</strong> Useful for pagination. Ensure <code>limit</code> is set to avoid unexpected behavior.
+      </p>
+    </div>
+
+    <div class="method">
+      <h3>union(<code>$query, $all=false, $params=[], $paramTypes=''</code>)</h3>
+      <p>Combines the results of the current query with another query using <code>UNION</code> or
+        <code>UNION ALL</code>.</p>
+      <table class="table">
+        <tr>
+          <th>Parameter</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>$query</td>
+          <td>string</td>
+          <td>Raw SQL query to union</td>
+        </tr>
+        <tr>
+          <td>$all</td>
+          <td>boolean</td>
+          <td>Use UNION ALL if true (default: false)</td>
+        </tr>
+        <tr>
+          <td>$params</td>
+          <td>array</td>
+          <td>Parameters for the union query (optional)</td>
+        </tr>
+        <tr>
+          <td>$paramTypes</td>
+          <td>string</td>
+          <td>Parameter types for binding (optional)</td>
+        </tr>
+      </table>
+      <p><strong>Example:</strong></p>
+      <pre>$select->union('SELECT id, name FROM archived_users');</pre>
+      <p><strong>Notes:</strong> Ensure both queries return the same number of columns with compatible types.
+        <code>UNION ALL</code> is faster but includes duplicates.</p>
+    </div>
+
+    <div class="method">
+      <h3>run()</h3>
+      <p>Executes the constructed query and returns the results as an associative array. Automatically binds parameters
+        for security.</p>
+      <p><strong>Example:</strong></p>
+      <pre>
+$results = $select->run();
+print_r($results);
+      </pre>
+      <div class="example-output">
+        [
+        {id: 1, name: "John", email: "john@example.com"},<br>
+        {id: 2, name: "Alice", email: "alice@example.com"}
+        ]
+      </div>
+      <p><strong>Notes:</strong> Call this method after building the query. Throws an exception if the query is invalid
+        or the database connection fails.</p>
+    </div>
+
+    <h2>Example Full Query</h2>
+    <p>This example demonstrates a complex query combining multiple methods to fetch active users with specific roles,
+      sorted and paginated.</p>
+    <pre>
+$select = new Select();
+$users = $select->table('users')
+               ->columns(['id', 'name', 'email'])
+               ->join('roles', 'users.role_id', '=', 'roles.id', 'LEFT')
+               ->where('status', '=', 'active')
+               ->whereIn('role', [1, 2])
+               ->orderBy('id', 'DESC')
+               ->limit(5)
+               ->offset(0)
+               ->run();
+    </pre>
+    <div class="example-output">
+      [
+      {id: 12, name: "John Doe", email: "john@example.com"},<br>
+      {id: 11, name: "Alice", email: "alice@example.com"}
+      ]
+    </div>
+    <p><strong>Notes:</strong> This query joins the <code>users</code> and <code>roles</code> tables, filters for active
+      users with role IDs 1 or 2, sorts by ID in descending order, and returns the first 5 results.</p>
+
+  </main>
+
+  <script src="mode.js"></script>
+</body>
+
+</html>
